@@ -1,6 +1,4 @@
-﻿//  Copyright 2019 Lobanov Andrey
-
-#define nSize 1000
+﻿#define nSize 1000
 #define nAmount 20
 
 #include <iostream>
@@ -23,10 +21,10 @@ void countSort(int arr[], int len, int exp) {
 
     for (i = 0; i < len; i++) {
         count[(arr[i] / exp) % 10]++;
-	}
-	for (i = 1; i < 10; i++) {
+    }
+    for (i = 1; i < 10; i++) {
         count[i] += count[i - 1];
-	}
+    }
     for (i = len - 1; i >= 0; i--) {
         output[count[(arr[i] / exp) % 10] - 1] = arr[i];
         count[(arr[i] / exp) % 10]--;
