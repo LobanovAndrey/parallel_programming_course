@@ -1,4 +1,4 @@
-﻿// Copyright 2019 Lobanov Andrey
+﻿//  Copyright 2019 Lobanov Andrey
 
 #define nSize 1000
 #define nAmount 20
