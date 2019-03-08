@@ -34,7 +34,7 @@ void countSort(int arr[], int len, int exp) {
 		arr[i] = output[i];
 }
 
-void radixsort(int arr[], int len) {
+void radixSort(int arr[], int len) {
 	int exp, m;
 	m = getMax(arr, len);
 
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 		std::cout << "\nValue " << i + 1 << ": [" << arr[i] << "]";
 	}
 
-	radixsort(arr, len);
+	radixSort(arr, len);
 
 	std::cout << "\n\nSorted array ";
 	for (int i = 0; i < len; i++)
