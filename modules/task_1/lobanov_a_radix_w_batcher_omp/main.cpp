@@ -1,4 +1,6 @@
-﻿#define nSize 1000
+﻿// Copyright 2019 Lobanov Andrey
+
+#define nSize 1000
 #define nAmount 20
 
 #include <iostream>
