@@ -64,12 +64,13 @@ void countSort(int *const arr, int len, int exp) {
     }
 }
 
-void compexch(int &const a, int &const b) {
+void compexch(int &a, int &b) {
     if (b < a) {
         int temp = a;
         a = b;
         b = temp;
     }
+}
 
 void radixSort(int *const arr, int len) {
     int exp, m;
