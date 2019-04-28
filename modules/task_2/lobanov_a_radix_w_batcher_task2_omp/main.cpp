@@ -16,7 +16,7 @@ void generateArr(int *const arr, int const len) {
     }
 }
 
-void ShowArray(const int* arr, const int length) {
+void showArray(const int* arr, const int length) {
     if (length > 65) {
         std::cout << "size is too big to display" << std::endl;
         return;
@@ -64,11 +64,12 @@ void countSort(int *const arr, int len, int exp) {
     }
 }
 
-void compexch(int &const a, int &const b)
-{
+void compexch(int &const a, int &const b) {
     if (b < a)
-        std::swap(a, b);
-}
+        int temp = a;
+        a = b;
+        b = temp;
+    }
 
 void radixSort(int *const arr, int len) {
     int exp, m;
@@ -79,8 +80,7 @@ void radixSort(int *const arr, int len) {
     }
 }
 
-void merge(int *const arr, int l, int r)
-{
+void merge(int *const arr, int l, int r) {
     int count = r - l + 1;
 
     for (int k = count / 2; k > 0; k /= 2)
@@ -89,13 +89,12 @@ void merge(int *const arr, int l, int r)
                 compexch(arr[l + j + i], arr[l + j + i + k]);
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     int threads = 4;
     int t_id, shift, amount;
     double t1, t2, dt, dt2;
     int len = nAmount;
-    int	*arr = new int[len];
+    int *arr = new int[len];
     int *arr2 = new int[len];
 
     int step = 1;
@@ -106,7 +105,7 @@ int main(int argc, char* argv[])
 
     t1 = omp_get_wtime();
 
-#pragma omp parallel shared(arr, exp) private(t_id, shift, amount) num_threads(threads) 
+#pragma omp parallel shared(arr, exp) private(t_id, shift, amount) num_threads(threads)
     {
         t_id = omp_get_thread_num();
 
@@ -142,7 +141,7 @@ int main(int argc, char* argv[])
     t2 = omp_get_wtime();
     dt2 = t2 - t1;
 
-    ShowArray(arr, len);
+    showArray(arr, len);
 
     if (sortCheck(arr, len))
         std::cout << "\nSorted";
