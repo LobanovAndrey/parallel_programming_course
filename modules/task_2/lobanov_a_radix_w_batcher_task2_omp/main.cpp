@@ -65,7 +65,7 @@ void countSort(int *const arr, int len, int exp) {
 }
 
 void compexch(int &const a, int &const b) {
-    if (b < a)
+    if (b < a) {
         int temp = a;
         a = b;
         b = temp;
