@@ -1,6 +1,6 @@
 //  Copyright 2019 Lobanov Andrey
 #define nSize 1000
-#define namount 67108864
+#define namount 256
 
 #include <omp.h>
 #include <iostream>
@@ -144,7 +144,7 @@ int main(int argc, char* argv[]) {
     else
         std::cout << "\nUnsorted!!!";
 
-    std::cout << "\n\nElements: " << amount;
+    std::cout << "\n\nElements: " << namount;
     std::cout << "\n\nTime PP for [" << threads << "] threads : " << dt;
     std::cout << "\n\nTime N_PP :" << dt2;
 
