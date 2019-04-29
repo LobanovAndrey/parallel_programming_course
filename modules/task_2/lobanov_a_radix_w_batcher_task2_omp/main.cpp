@@ -1,6 +1,6 @@
 //  Copyright 2019 Lobanov Andrey
 #define nSize 1000
-#define namount 1048576
+#define namount 67108864
 
 #include <omp.h>
 #include <iostream>
@@ -16,13 +16,13 @@ void generateArr(int *const arr, int const len) {
     }
 }
 
-void showArray(const int* arr, const int length) {
-    if (length > 65) {
+void showArray(const int* arr, const int len) {
+    if (len > 65) {
         std::cout << "size is too big to display" << std::endl;
         return;
     }
-    for (int i = 0; i < length; i++)
-        std::cout << arr[i] << " ";
+    for (int i = 0; i < len; i++)
+    std::cout << arr[i] << " ";
 
     std::cout << std::endl;
 }
@@ -30,7 +30,7 @@ void showArray(const int* arr, const int length) {
 bool sortCheck(int const *arr, int len) {
     for (int i = 0; i < len - 1; i++)
         if (arr[i] > arr[i + 1])
-           return false;
+        return false;
     return true;
 }
 
@@ -69,7 +69,7 @@ void radixSort(int *const arr, int len) {
     m = getMax(arr, len);
 
     for (exp = 1; m / exp > 0; exp *= 10) {
-        countSort(arr, len, exp);
+         countSort(arr, len, exp);
     }
 }
 
@@ -87,7 +87,7 @@ void merge(int *arr, int l, int r) {
 }
 
 int main(int argc, char* argv[]) {
-    int threads = 4;
+    int threads = omp_get_max_threads();
 
     double t1, t2, dt, dt2;
     int len = namount;
@@ -100,30 +100,26 @@ int main(int argc, char* argv[]) {
     generateArr(arr, len);
     generateArr(arr2, len);
 
-    int* shift = new int[threads];
-    int* amount = new int[threads];
+    int shift = 0;
+    int t_id = 0;
+    int amount = len / threads;
 
     t1 = omp_get_wtime();
 
-#pragma omp parallel shared(arr, shift, amount, exp) num_threads(threads)
+#pragma omp parallel shared(arr, exp) private(t_id, shift) num_threads(threads)
     {
-        int t_id = omp_get_thread_num();
+        t_id = omp_get_thread_num();
 
-        shift[t_id] = t_id * (len / threads);
+        shift = t_id * (len / threads);
 
-        if (t_id == threads - 1)
-            amount[t_id] = (len / threads) + (len % threads);
-        else
-            amount[t_id] = len / threads;
-
-        radixSort(arr + shift[t_id], amount[t_id]);
+        radixSort(arr + shift, amount);
 
         while (step < threads) {
 #pragma omp barrier
             step = static_cast<int>(pow(2, exp));
 
             if (t_id < (threads / step)) {
-                merge(arr, shift[t_id] * step, (step * shift[t_id] + step * amount[t_id]) - 1);
+                merge(arr, shift * step, (step * shift + step * amount) - 1);
             }
 #pragma omp barrier
 #pragma omp single
@@ -144,17 +140,18 @@ int main(int argc, char* argv[]) {
     showArray(arr, len);
 
     if (sortCheck(arr, len))
-        std::cout << "\nSorted";
+        std::cout << "\nArray is sorted";
     else
         std::cout << "\nUnsorted!!!";
 
-    std::cout << "\n\nTime P :" << dt;
-    std::cout << "\n\nTime NP :" << dt2;
+    std::cout << "\n\nElements: " << amount;
+    std::cout << "\n\nTime PP for [" << threads << "] threads : " << dt;
+    std::cout << "\n\nTime N_PP :" << dt2;
+
+    system("pause");
 
     delete[] arr;
     delete[] arr2;
-    delete[] shift;
-    delete[] amount;
 
     return 0;
 }
