@@ -1,6 +1,6 @@
 //  Copyright 2019 Lobanov Andrey
 #define nSize 1000
-#define nAmount 2048
+#define namount 1048576
 
 #include <omp.h>
 #include <iostream>
@@ -88,9 +88,9 @@ void merge(int *arr, int l, int r) {
 
 int main(int argc, char* argv[]) {
     int threads = 4;
-    int t_id, shift, amount;
+
     double t1, t2, dt, dt2;
-    int len = nAmount;
+    int len = namount;
     int *arr = new int[len];
     int *arr2 = new int[len];
 
@@ -100,27 +100,30 @@ int main(int argc, char* argv[]) {
     generateArr(arr, len);
     generateArr(arr2, len);
 
+    int* shift = new int[threads];
+    int* amount = new int[threads];
+
     t1 = omp_get_wtime();
 
-#pragma omp parallel shared(arr, exp) private(t_id, shift, amount) num_threads(threads)
+#pragma omp parallel shared(arr, shift, amount, exp) num_threads(threads)
     {
-        t_id = omp_get_thread_num();
+        int t_id = omp_get_thread_num();
 
-        shift = t_id * (len / threads);
+        shift[t_id] = t_id * (len / threads);
 
         if (t_id == threads - 1)
-            amount = (len / threads) + (len % threads);
+            amount[t_id] = (len / threads) + (len % threads);
         else
-            amount = len / threads;
+            amount[t_id] = len / threads;
 
-        radixSort(arr + shift, amount);
+        radixSort(arr + shift[t_id], amount[t_id]);
 
         while (step < threads) {
 #pragma omp barrier
             step = static_cast<int>(pow(2, exp));
 
             if (t_id < (threads / step)) {
-                merge(arr, shift * step, (step * shift + step * amount) - 1);
+                merge(arr, shift[t_id] * step, (step * shift[t_id] + step * amount[t_id]) - 1);
             }
 #pragma omp barrier
 #pragma omp single
@@ -150,6 +153,8 @@ int main(int argc, char* argv[]) {
 
     delete[] arr;
     delete[] arr2;
+    delete[] shift;
+    delete[] amount;
 
     return 0;
 }
