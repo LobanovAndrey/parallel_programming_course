@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
     t1 = omp_get_wtime();
 
-#pragma omp parallel shared(arr, exp) private(t_id, shift) num_threads(threads)
+#pragma omp parallel shared(arr, amount, exp) private(t_id, shift) num_threads(threads)
     {
         t_id = omp_get_thread_num();
 
@@ -147,8 +147,6 @@ int main(int argc, char* argv[]) {
     std::cout << "\n\nElements: " << amount;
     std::cout << "\n\nTime PP for [" << threads << "] threads : " << dt;
     std::cout << "\n\nTime N_PP :" << dt2;
-
-    system("pause");
 
     delete[] arr;
     delete[] arr2;
