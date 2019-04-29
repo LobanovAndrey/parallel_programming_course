@@ -1,6 +1,6 @@
 //  Copyright 2019 Lobanov Andrey
 #define nSize 1000
-#define nAmount pow(2, 23)
+#define nAmount 2048
 
 #include <omp.h>
 #include <iostream>
@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
 
         while (step < threads) {
 #pragma omp barrier
-            step = pow(2, exp);
+            step = static_cast<int>(pow(2, exp));
 
             if (t_id < (threads / step)) {
                 merge(arr, shift * step, (step * shift + step * amount) - 1);
