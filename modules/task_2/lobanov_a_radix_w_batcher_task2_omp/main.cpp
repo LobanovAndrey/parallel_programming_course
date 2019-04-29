@@ -1,6 +1,6 @@
 //  Copyright 2019 Lobanov Andrey
 #define nSize 1000
-#define nAmount 4096
+#define nAmount pow(2, 23)
 
 #include <omp.h>
 #include <iostream>
@@ -64,14 +64,6 @@ void countSort(int *const arr, int len, int exp) {
     }
 }
 
-void compexch(int &const a, int &const b) {
-    if (b < a) {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
-}
-
 void radixSort(int *const arr, int len) {
     int exp, m;
     m = getMax(arr, len);
@@ -81,13 +73,17 @@ void radixSort(int *const arr, int len) {
     }
 }
 
-void merge(int *const arr, int l, int r) {
+void merge(int *arr, int l, int r) {
     int count = r - l + 1;
 
     for (int k = count / 2; k > 0; k /= 2)
         for (int j = k % (count / 2); j + k < count; j += k + k)
             for (int i = 0; i < k; i++)
-                compexch(arr[l + j + i], arr[l + j + i + k]);
+                if (arr[l + j + i] > arr[l + j + i + k]) {
+                    int temp = arr[l + j + i];
+                    arr[l + j + i] = arr[l + j + i + k];
+                    arr[l + j + i + k] = temp;
+                }
 }
 
 int main(int argc, char* argv[]) {
@@ -149,8 +145,8 @@ int main(int argc, char* argv[]) {
     else
         std::cout << "\nUnsorted!!!";
 
-    std::cout << "\nTime P :" << dt;
-    std::cout << "\nTime NP :" << dt2;
+    std::cout << "\n\nTime P :" << dt;
+    std::cout << "\n\nTime NP :" << dt2;
 
     delete[] arr;
     delete[] arr2;
