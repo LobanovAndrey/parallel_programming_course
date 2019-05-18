@@ -146,6 +146,7 @@ int main(int argc, char* argv[]) {
     std::cout << "\n\nTime N_PP :" << dt2;
     std::cout << "\n\nBoost: " << dt2 / dt << std::endl;
 
+
     delete[] arr;
     delete[] arr2;
 
