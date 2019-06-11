@@ -4,7 +4,7 @@ if ( USE_TBB )
     project( ${PROJECT_NAME} )
 
     message( STATUS "-- " ${PROJECT_NAME} )
-    add_executable( ${PROJECT_NAME} main.cpp )
+    add_executable( ${PROJECT_NAME} Main.cpp )
 
     if( WIN32 )
         target_link_libraries(${PROJECT_NAME} ${TBB_IMPORTED_TARGETS})
