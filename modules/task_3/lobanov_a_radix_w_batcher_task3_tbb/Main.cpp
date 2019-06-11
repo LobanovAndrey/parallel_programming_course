@@ -1,8 +1,9 @@
 // Copyright 2019 Lobanov Andrey
+
+#define _SCL_SECURE_NO_WARNINGS
 #define namount 1048576
 
 #include <tbb/tbb.h>
-#include <omp.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -90,21 +91,23 @@ void RadixWBatchermergeTbb(int *arr, int len, int amount, int threads) {
     int step = 1;
     int exp = 1;
 
-    tbb::parallel_for(tbb::blocked_range<int>(0, len, amount), [=](tbb::blocked_range<int>& r) {
+    tbb::parallel_for(tbb::blocked_range<int>(0, threads, 1), [=](tbb::blocked_range<int>& r) {
         int begin = r.begin();
         int end = r.end();
 
-        RadixSort(arr + begin, amount);
+    for (int i = begin; i != end; ++i)
+            RadixSort(arr + i * amount, amount);
     });
 
     while (step < threads) {
         step = static_cast<int>(pow(2, exp));
 
-        tbb::parallel_for(tbb::blocked_range<int>(0, len / step, amount), [=](tbb::blocked_range<int>& r) {
+        tbb::parallel_for(tbb::blocked_range<int>(0, threads / step, 1), [=](tbb::blocked_range<int>& r) {
             int begin = r.begin();
             int end = r.end();
 
-            BatcherMerge(arr, begin * step, (step * begin + step * amount) - 1);
+            for (int i = begin; i != end; i++)
+                BatcherMerge(arr, i * amount * step, (step * i * amount + step * amount) - 1);
         });
         exp++;
     }
